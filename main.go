@@ -1,5 +1,5 @@
 /*
-Copyright © 2021 NAME HERE <EMAIL ADDRESS>
+Copyright © 2021 NAME HERE <saquib@anonderbazar.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,10 +13,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
 package main
 
 import "github.com/hsaquib/ab-imagews/cmd"
 
+// @title imageservice
+// @version 1.0
+// @description This is image uploader
+// @termsOfService tbd
+// @contact.name Hasibus Saquib
+// @contact.email saquib@anonderbazar.com
+// @host http://localhost:8080
+// @BasePath /
 func main() {
 	cmd.Execute()
 }

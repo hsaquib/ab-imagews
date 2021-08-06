@@ -3,10 +3,12 @@ package service
 import (
 	"github.com/google/uuid"
 	"github.com/hsaquib/ab-imagews/config"
-	"github.com/hsaquib/ab-imagews/model"
+	req "github.com/hsaquib/ab-imagews/dto/request"
+	"github.com/hsaquib/ab-imagews/dto/response"
 	rLog "github.com/hsaquib/rest-log"
 	"io/ioutil"
 	"mime/multipart"
+	"sync"
 )
 
 type FileProcessor struct {
@@ -21,6 +23,11 @@ type UploadStatus struct {
 	Err error
 }
 
+type BatchUploadStatus struct {
+	UploadedImage *response.UploadedImages
+	Err           error
+}
+
 func NewFileProcessor(conf *config.AppConfig, logger rLog.Logger) *FileProcessor {
 	return &FileProcessor{
 		Config:       conf,
@@ -30,7 +37,7 @@ func NewFileProcessor(conf *config.AppConfig, logger rLog.Logger) *FileProcessor
 	}
 }
 
-func (processor *FileProcessor) UploadImageVariants(file multipart.File, header *multipart.FileHeader) (*model.UploadedImages, error) {
+func (processor *FileProcessor) UploadImageVariants(file multipart.File, header *multipart.FileHeader) (*response.UploadedImages, error) {
 
 	filename := uuid.New().String() + "-" + header.Filename
 	fileBytes, err := ioutil.ReadAll(file)
@@ -60,12 +67,98 @@ func (processor *FileProcessor) UploadImageVariants(file multipart.File, header 
 		return nil, thumbStatus.Err
 	}
 
-	images := &model.UploadedImages{
+	images := &response.UploadedImages{
+		FileName:  header.Filename,
 		Original:  orgStatus.Url,
 		Medium:    mediumStatus.Url,
 		Thumbnail: thumbStatus.Url,
 	}
+	close(resultOfOrigin)
+	close(resultOfMedium)
+	close(resultOfThumb)
 	return images, nil
+}
+
+func (processor *FileProcessor) UploadVariantsOfImageList(fileList []req.FileInfo) ([]*response.UploadedImages, error) {
+
+	var imageList []*response.UploadedImages
+
+	wg := new(sync.WaitGroup)
+	resultChan := make(chan BatchUploadStatus)
+	for _, info := range fileList {
+		wg.Add(1)
+		fileBytes, err := ioutil.ReadAll(info.File)
+		if err != nil {
+			return nil, err
+		}
+		go processor.uploadVariants(info.FileName, fileBytes, resultChan, wg)
+	}
+
+	go func() {
+		wg.Wait()
+		close(resultChan)
+	}()
+
+	for result := range resultChan {
+		//deal with the result in some way
+		if result.Err != nil {
+			return nil, result.Err
+		}
+		imageList = append(imageList, result.UploadedImage)
+	}
+
+	return imageList, nil
+}
+
+func (processor *FileProcessor) uploadVariants(filename string, fileBytes []byte, ch chan BatchUploadStatus, wg *sync.WaitGroup) {
+	defer wg.Done()
+	reqFileName := filename
+	filename = uuid.New().String() + "-" + filename
+
+	resultOfOrigin := make(chan UploadStatus)
+	resultOfMedium := make(chan UploadStatus)
+	resultOfThumb := make(chan UploadStatus)
+
+	go processor.uploadOriginal(filename, fileBytes, resultOfOrigin)
+	go processor.uploadMedium(filename, fileBytes, resultOfMedium)
+	go processor.uploadThumb(filename, fileBytes, resultOfThumb)
+
+	orgStatus := <-resultOfOrigin
+	mediumStatus := <-resultOfMedium
+	thumbStatus := <-resultOfThumb
+
+	if orgStatus.Err != nil {
+		ch <- BatchUploadStatus{
+			UploadedImage: nil,
+			Err:           orgStatus.Err,
+		}
+		return
+	}
+	if mediumStatus.Err != nil {
+		ch <- BatchUploadStatus{
+			UploadedImage: nil,
+			Err:           mediumStatus.Err,
+		}
+		return
+	}
+	if thumbStatus.Err != nil {
+		ch <- BatchUploadStatus{
+			UploadedImage: nil,
+			Err:           thumbStatus.Err,
+		}
+		return
+	}
+
+	images := &response.UploadedImages{
+		FileName:  reqFileName,
+		Original:  orgStatus.Url,
+		Medium:    mediumStatus.Url,
+		Thumbnail: thumbStatus.Url,
+	}
+	ch <- BatchUploadStatus{
+		UploadedImage: images,
+		Err:           nil,
+	}
 }
 
 func (processor *FileProcessor) uploadOriginal(filename string, fileBytes []byte, result chan UploadStatus) {

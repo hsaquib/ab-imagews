@@ -1,0 +1,94 @@
+basePath: /
+definitions:
+  response.EmptyErrorRes:
+    properties:
+      data:
+        $ref: '#/definitions/response.EmptyObject'
+      message:
+        example: failure message
+        type: string
+      status:
+        example: Status string corresponding to the error
+        type: string
+      success:
+        example: false
+        type: boolean
+      timestamp:
+        example: "2006-01-02T15:04:05.000Z"
+        type: string
+    type: object
+  response.EmptyObject:
+    type: object
+  response.ImageVariantUploadSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/response.UploadedImages'
+      message:
+        type: string
+      status:
+        type: string
+      success:
+        type: boolean
+      timestamp:
+        type: string
+    type: object
+  response.UploadedImages:
+    properties:
+      medium:
+        example: https://..../m/..jpg
+        type: string
+      original:
+        example: https://....jpg
+        type: string
+      thumbnail:
+        example: https://..../s/..jpg
+        type: string
+    type: object
+host: http://localhost:8080
+info:
+  contact:
+    email: saquib@anonderbazar.com
+    name: Hasibus Saquib
+  description: This is image uploader
+  termsOfService: tbd
+  title: imageservice
+  version: "1.0"
+paths:
+  /api/v1/private/admin/image/upload:
+    post:
+      description: 'Upload an image with three variants: Original, Medium(500X500)
+        & ThumbNail(100X100)'
+      parameters:
+      - description: Set access token here
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Some fields are mandatory
+        in: formData
+        name: file
+        required: true
+        type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ImageVariantUploadSuccessResponse'
+        "400":
+          description: Invalid request body, or missing required fields.
+          schema:
+            $ref: '#/definitions/response.EmptyErrorRes'
+        "401":
+          description: Unauthorized access attempt.
+          schema:
+            $ref: '#/definitions/response.EmptyErrorRes'
+        "500":
+          description: API sever or db unreachable.
+          schema:
+            $ref: '#/definitions/response.EmptyErrorRes'
+      summary: upload image
+      tags:
+      - image variants
+swagger: "2.0"

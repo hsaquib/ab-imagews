@@ -1,0 +1,137 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is image uploader",
+        "title": "imageservice",
+        "termsOfService": "tbd",
+        "contact": {
+            "name": "Hasibus Saquib",
+            "email": "saquib@anonderbazar.com"
+        },
+        "version": "1.0"
+    },
+    "host": "http://localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/api/v1/private/admin/image/upload": {
+            "post": {
+                "description": "Upload an image with three variants: Original, Medium(500X500) \u0026 ThumbNail(100X100)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "image variants"
+                ],
+                "summary": "upload image",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Set access token here",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "object",
+                        "description": "Some fields are mandatory",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ImageVariantUploadSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body, or missing required fields.",
+                        "schema": {
+                            "$ref": "#/definitions/response.EmptyErrorRes"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access attempt.",
+                        "schema": {
+                            "$ref": "#/definitions/response.EmptyErrorRes"
+                        }
+                    },
+                    "500": {
+                        "description": "API sever or db unreachable.",
+                        "schema": {
+                            "$ref": "#/definitions/response.EmptyErrorRes"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "response.EmptyErrorRes": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/response.EmptyObject"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "failure message"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "Status string corresponding to the error"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2006-01-02T15:04:05.000Z"
+                }
+            }
+        },
+        "response.EmptyObject": {
+            "type": "object"
+        },
+        "response.ImageVariantUploadSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/response.UploadedImages"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                },
+                "timestamp": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.UploadedImages": {
+            "type": "object",
+            "properties": {
+                "medium": {
+                    "type": "string",
+                    "example": "https://..../m/..jpg"
+                },
+                "original": {
+                    "type": "string",
+                    "example": "https://....jpg"
+                },
+                "thumbnail": {
+                    "type": "string",
+                    "example": "https://..../s/..jpg"
+                }
+            }
+        }
+    }
+}

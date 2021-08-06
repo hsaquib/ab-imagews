@@ -8,3 +8,5 @@ config:
     BaseUrl: https://d2pap2axpvlqe3.cloudfront.net/public/
     S3Bucket: hsaquibs3
     Folder: public
+  APIs:
+    AuthApi: https://auth-iamrz1.cloud.okteto.net/
