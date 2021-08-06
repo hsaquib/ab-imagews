@@ -19,6 +19,8 @@ import (
 	"fmt"
 	"github.com/hsaquib/ab-imagews/api"
 	"github.com/hsaquib/ab-imagews/config"
+	"github.com/hsaquib/ab-imagews/service"
+	"github.com/hsaquib/ab-imagews/utils"
 	rLog "github.com/hsaquib/rest-log"
 	"github.com/spf13/cobra"
 	"log"
@@ -77,7 +79,7 @@ func serve() {
 func startServer() (*http.Server, error) {
 	err := config.LoadConfig()
 	cfg := config.GetConfig()
-	rLog.Init(cfg.Env == "DEV", "image-server")
+	rLog.Init(cfg.Env == utils.DEV_ENV, "image-server")
 	if err != nil {
 		log.Println("could not load one or more config")
 		return nil, err
@@ -85,12 +87,12 @@ func startServer() (*http.Server, error) {
 	//rLogger
 	rLogger := rLog.GetLogger()
 
-	server, err := api.Start(cfg, rLogger)
+	serviceProvider := service.InitProvider(cfg, rLogger)
+	server, err := api.Start(cfg, serviceProvider, rLogger)
 	if err != nil {
 		log.Println("err:", err)
 		return nil, err
 	}
-
 	return server, nil
 }
 

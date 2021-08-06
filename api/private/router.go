@@ -3,22 +3,25 @@ package private
 import (
 	"github.com/go-chi/chi"
 	"github.com/hsaquib/ab-imagews/api/private/admin"
+	"github.com/hsaquib/ab-imagews/service"
 	rLog "github.com/hsaquib/rest-log"
 )
 
 type privateRouter struct {
-	Log rLog.Logger
+	serviceProvider *service.Provider
+	Log             rLog.Logger
 }
 
-func NewPrivateRouter(rLogger rLog.Logger) *privateRouter {
+func NewPrivateRouter(provider *service.Provider, rLogger rLog.Logger) *privateRouter {
 	return &privateRouter{
-		Log: rLogger,
+		serviceProvider: provider,
+		Log:             rLogger,
 	}
 }
 
 func (pr *privateRouter) Router() *chi.Mux {
 	r := chi.NewRouter()
 
-	r.Mount("/admin", admin.NewAdminRouter(pr.Log).Router())
+	r.Mount("/admin", admin.NewAdminRouter(pr.serviceProvider, pr.Log).Router())
 	return r
 }

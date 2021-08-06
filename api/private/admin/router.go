@@ -2,23 +2,26 @@ package admin
 
 import (
 	"github.com/go-chi/chi"
+	"github.com/hsaquib/ab-imagews/service"
 	rLog "github.com/hsaquib/rest-log"
 )
 
 type adminRouter struct {
-	Log rLog.Logger
+	ServiceProvider *service.Provider
+	Log             rLog.Logger
 }
 
-func NewAdminRouter(rLogger rLog.Logger) *adminRouter {
+func NewAdminRouter(provider *service.Provider, rLogger rLog.Logger) *adminRouter {
 	return &adminRouter{
-		Log: rLogger,
+		ServiceProvider: provider,
+		Log:             rLogger,
 	}
 }
 
 func (ar *adminRouter) Router() *chi.Mux {
 	r := chi.NewRouter()
 
-	r.Post("/upload", UploadImage)
+	r.Mount("/image", ar.imageRouter())
 
 	//r.With(middleware.AuthenticatedAdminOnly).Post("/signup", cr.signup)
 	//r.With(middleware.AuthenticatedAdminOnly).Get("/profile", cr.getAdminProfile)

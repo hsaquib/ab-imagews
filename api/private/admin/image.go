@@ -2,11 +2,10 @@ package admin
 
 import (
 	"fmt"
+	"github.com/go-chi/chi"
 	"github.com/hsaquib/ab-imagews/utils"
-	"io"
 	"mime/multipart"
 	"net/http"
-	"os"
 )
 
 type FileInfo struct {
@@ -15,8 +14,15 @@ type FileInfo struct {
 	FileSize int64
 }
 
-func UploadImage(writer http.ResponseWriter, request *http.Request) {
+func (ar *adminRouter) imageRouter() http.Handler {
+	r := chi.NewRouter()
+	reqHandler := NewApiHandler(ar.ServiceProvider, ar.Log)
 
+	r.Post("/upload", reqHandler.UploadImage)
+	return r
+}
+
+func (handler *apiHandler) UploadImage(writer http.ResponseWriter, request *http.Request) {
 	// ParseMultipartForm parses a request body as multipart/form-data
 	err := request.ParseMultipartForm(32 << 20)
 	if err != nil {
@@ -38,28 +44,14 @@ func UploadImage(writer http.ResponseWriter, request *http.Request) {
 		}
 	}(file) // Close the file when we finish
 
-	// This is path which we want to store the file
-	f, err := os.OpenFile("/Users/hasibussaquib/IdeaProjects/cp-"+fileHeader.Filename, os.O_WRONLY|os.O_CREATE, 0666)
-
+	images, err := handler.ServiceProvider.FileProcessor.UploadImageVariants(file, fileHeader)
 	if err != nil {
 		utils.HandleObjectError(writer, err)
 		return
 	}
 
-	// Copy the file to the destination path
-	written, err := io.Copy(f, file)
+	err = utils.ServeJSONObject(writer, http.StatusOK, "Successful", images, nil, true)
 	if err != nil {
-		utils.HandleObjectError(writer, err)
-		return
+		fmt.Println(err.Error())
 	}
-	fmt.Println(written)
-
-	info := FileInfo{
-		MimeType: fmt.Sprintf("%s", fileHeader.Header),
-		FileName: fileHeader.Filename,
-		FileSize: fileHeader.Size,
-	}
-
-	utils.ServeJSONObject(writer, http.StatusOK, "Successful", info, nil, true)
-	return
 }

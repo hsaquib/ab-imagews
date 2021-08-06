@@ -10,10 +10,17 @@ type RestConfig struct {
 	Port int
 }
 
+type UploadConfig struct {
+	BaseUrl  string
+	S3Bucket string
+	Folder   string
+}
+
 type AppConfig struct {
 	Env             string
 	GracefulTimeout int
 	Rest            RestConfig
+	Upload          UploadConfig
 }
 
 var appConfig *AppConfig

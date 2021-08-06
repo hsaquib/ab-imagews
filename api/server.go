@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/hsaquib/ab-imagews/api/health"
 	"github.com/hsaquib/ab-imagews/config"
+	"github.com/hsaquib/ab-imagews/service"
 	rLog "github.com/hsaquib/rest-log"
 	"log"
 	"net/http"
@@ -15,10 +16,10 @@ import (
 	"time"
 )
 
-func Start(cfg *config.AppConfig, logger rLog.Logger) (*http.Server, error) {
+func Start(cfg *config.AppConfig, srvProvider *service.Provider, logger rLog.Logger) (*http.Server, error) {
 
 	addr := fmt.Sprintf("%s:%d", cfg.Rest.Host, cfg.Rest.Port)
-	handler, err := SetupRouter(cfg, logger)
+	handler, err := SetupRouter(cfg, srvProvider, logger)
 	if err != nil {
 		log.Println("cant setup router:", err)
 		return nil, err
@@ -56,7 +57,7 @@ func Stop(server *http.Server) error {
 	return nil
 }
 
-func SetupRouter(cfg *config.AppConfig, logger rLog.Logger) (*chi.Mux, error) {
+func SetupRouter(cfg *config.AppConfig, srvProvider *service.Provider, logger rLog.Logger) (*chi.Mux, error) {
 	r := chi.NewRouter()
 
 	r.Use(chiMiddleware.RequestID)
@@ -81,7 +82,7 @@ func SetupRouter(cfg *config.AppConfig, logger rLog.Logger) (*chi.Mux, error) {
 	//}
 
 	r.Mount("/", health.Router())
-	r.Mount("/api/v1", V1Router(logger))
+	r.Mount("/api/v1", V1Router(srvProvider, logger))
 
 	return r, nil
 }
