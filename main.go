@@ -25,7 +25,7 @@ import "github.com/hsaquib/ab-imagews/cmd"
 // @contact.name Hasibus Saquib
 // @contact.email saquib@anonderbazar.com
 // @host http://localhost:8080
-// @BasePath /
+// @BasePath http://localhost:8080/
 func main() {
 	cmd.Execute()
 }

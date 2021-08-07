@@ -80,7 +80,7 @@ func SetupRouter(cfg *config.AppConfig, srvProvider *service.Provider, logger rL
 	}))
 
 	if cfg.Env == utils.DEV_ENV {
-		r.Get("/swagger/*", httpSwagger.Handler())
+		r.Get("/doc/*", httpSwagger.Handler())
 	}
 
 	r.Mount("/", health.Router())

@@ -28,7 +28,61 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/private/admin/image/upload": {
+        "/api/v1/private/admin/image/upload_with_variants": {
+            "post": {
+                "description": "Upload an image with three variants: Original, Medium(500X500) \u0026 ThumbNail(100X100)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "image variants"
+                ],
+                "summary": "upload image",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Set access token here",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "object",
+                        "description": "Some fields are mandatory",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ImageVariantUploadSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body, or missing required fields.",
+                        "schema": {
+                            "$ref": "#/definitions/response.EmptyErrorRes"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access attempt.",
+                        "schema": {
+                            "$ref": "#/definitions/response.EmptyErrorRes"
+                        }
+                    },
+                    "500": {
+                        "description": "API sever or db unreachable.",
+                        "schema": {
+                            "$ref": "#/definitions/response.EmptyErrorRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/private/merchant/image/upload_with_variants": {
             "post": {
                 "description": "Upload an image with three variants: Original, Medium(500X500) \u0026 ThumbNail(100X100)",
                 "produces": [
@@ -134,6 +188,10 @@ var doc = `{
         "response.UploadedImages": {
             "type": "object",
             "properties": {
+                "filename": {
+                    "type": "string",
+                    "example": "xyz.jpg"
+                },
                 "medium": {
                     "type": "string",
                     "example": "https://..../m/..jpg"
