@@ -26,7 +26,7 @@ func NewApiHandler(srvProvider *service.Provider, log rLog.Logger) *apiHandler {
 // UploadImageWithVariantsByAdmin godoc
 // @Summary upload image
 // @Description Upload an image with three variants: Original, Medium(500X500) & ThumbNail(100X100)
-// @Tags image variants
+// @Tags Image
 // @Produce  json
 // @Param authorization header string true "Set access token here"
 // @Param  file formData object true "Some fields are mandatory"
@@ -43,7 +43,7 @@ func (handler *apiHandler) UploadImageWithVariantsByAdmin(writer http.ResponseWr
 // UploadImageWithVariantsByMerchant godoc
 // @Summary upload image
 // @Description Upload an image with three variants: Original, Medium(500X500) & ThumbNail(100X100)
-// @Tags image variants
+// @Tags Image
 // @Produce  json
 // @Param authorization header string true "Set access token here"
 // @Param  file formData object true "Some fields are mandatory"

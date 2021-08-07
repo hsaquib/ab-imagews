@@ -162,7 +162,6 @@ func (processor *FileProcessor) uploadVariants(filename string, fileBytes []byte
 }
 
 func (processor *FileProcessor) uploadOriginal(filename string, fileBytes []byte, result chan UploadStatus) {
-
 	url, err := processor.FileUploader.Upload(filename, fileBytes)
 	if err != nil {
 		result <- UploadStatus{

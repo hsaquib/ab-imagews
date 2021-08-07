@@ -16,7 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
 	"github.com/hsaquib/ab-imagews/api"
 	"github.com/hsaquib/ab-imagews/config"
 	"github.com/hsaquib/ab-imagews/service"
@@ -40,9 +39,7 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("serve called")
-	},
+	RunE: serve,
 }
 
 func init() {
@@ -58,22 +55,23 @@ func init() {
 	// is called directly, e.g.:
 	serveCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	cobra.OnInitialize(serve)
 }
 
-func serve() {
+func serve(cmd *cobra.Command, args []string) error {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-
+	log.Println("starting server")
 	app, err := startServer()
 	if err != nil {
 		log.Println(err.Error())
-		return
+		return err
 	}
 
 	err = stopServer(app)
 	if err != nil {
-		return
+		return err
 	}
+
+	return nil
 }
 
 func startServer() (*http.Server, error) {

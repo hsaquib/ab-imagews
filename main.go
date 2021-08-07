@@ -18,14 +18,14 @@ package main
 
 import "github.com/hsaquib/ab-imagews/cmd"
 
-// @title imageservice
+// @title auth
 // @version 1.0
-// @description This is image uploader
+// @description This is auth REST api server
 // @termsOfService tbd
-// @contact.name Hasibus Saquib
-// @contact.email saquib@anonderbazar.com
-// @host http://localhost:8080
-// @BasePath http://localhost:8080/
+// @contact.name Rezoan Tamal
+// @contact.email my.full.name.in.lower.case@gmail.com
+// @host https://catalog-iamrz1.cloud.okteto.net
+// @BasePath /
 func main() {
 	cmd.Execute()
 }

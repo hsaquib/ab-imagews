@@ -27,7 +27,7 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "ab-imagews",
+	Use:   "github.com/hsaquib/ab-imagews",
 	Short: "A brief description of your application",
 	Long: `A longer description that spans multiple lines and likely contains
 examples and usage of using your application. For example:
@@ -43,13 +43,13 @@ to quickly create a Cobra application.`,
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	cobra.CheckErr(rootCmd.Execute())
-
+	initConfig()
 	fmt.Println(viper.AllKeys())
+	cobra.CheckErr(rootCmd.Execute())
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
+	cobra.OnInitialize()
 	//rootCmd.AddCommand(serveCmd)
 
 	// Here you will define your flags and configuration settings.

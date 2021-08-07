@@ -35,7 +35,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "image variants"
+                    "Image"
                 ],
                 "summary": "upload image",
                 "parameters": [
@@ -89,7 +89,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "image variants"
+                    "Image"
                 ],
                 "summary": "upload image",
                 "parameters": [

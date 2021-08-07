@@ -20,7 +20,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "image variants"
+                    "Image"
                 ],
                 "summary": "upload image",
                 "parameters": [
@@ -74,7 +74,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "image variants"
+                    "Image"
                 ],
                 "summary": "upload image",
                 "parameters": [
