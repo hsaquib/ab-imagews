@@ -39,44 +39,27 @@ func NewFileProcessor(conf *config.AppConfig, logger rLog.Logger) *FileProcessor
 
 func (processor *FileProcessor) UploadImageVariants(file multipart.File, header *multipart.FileHeader) (*response.UploadedImages, error) {
 
-	filename := uuid.New().String() + "-" + header.Filename
+	//filename := uuid.New().String() + "-" + header.Filename
 	fileBytes, err := ioutil.ReadAll(file)
 	if err != nil {
 		return nil, err
 	}
 
-	resultOfOrigin := make(chan UploadStatus)
-	resultOfMedium := make(chan UploadStatus)
-	resultOfThumb := make(chan UploadStatus)
+	wg := new(sync.WaitGroup)
+	resultChan := make(chan BatchUploadStatus)
+	wg.Add(1)
+	go processor.uploadVariants(header.Filename, fileBytes, resultChan, wg)
 
-	go processor.uploadOriginal(filename, fileBytes, resultOfOrigin)
-	go processor.uploadMedium(filename, fileBytes, resultOfMedium)
-	go processor.uploadThumb(filename, fileBytes, resultOfThumb)
+	go func() {
+		wg.Wait()
+		close(resultChan)
+	}()
 
-	orgStatus := <-resultOfOrigin
-	mediumStatus := <-resultOfMedium
-	thumbStatus := <-resultOfThumb
-
-	if orgStatus.Err != nil {
-		return nil, orgStatus.Err
+	result := <-resultChan
+	if result.Err != nil {
+		return nil, result.Err
 	}
-	if mediumStatus.Err != nil {
-		return nil, mediumStatus.Err
-	}
-	if thumbStatus.Err != nil {
-		return nil, thumbStatus.Err
-	}
-
-	images := &response.UploadedImages{
-		FileName:  header.Filename,
-		Original:  orgStatus.Url,
-		Medium:    mediumStatus.Url,
-		Thumbnail: thumbStatus.Url,
-	}
-	close(resultOfOrigin)
-	close(resultOfMedium)
-	close(resultOfThumb)
-	return images, nil
+	return result.UploadedImage, nil
 }
 
 func (processor *FileProcessor) UploadVariantsOfImageList(fileList []req.FileInfo) ([]*response.UploadedImages, error) {

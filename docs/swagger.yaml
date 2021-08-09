@@ -47,17 +47,17 @@ definitions:
         example: https://..../s/..jpg
         type: string
     type: object
-host: http://localhost:8080
+host: localhost:8080
 info:
   contact:
-    email: saquib@anonderbazar.com
+    email: saquib.hasibus@anonderbazar.com
     name: Hasibus Saquib
-  description: This is image uploader
+  description: This is auth REST api server
   termsOfService: tbd
-  title: imageservice
+  title: auth
   version: "1.0"
 paths:
-  /api/v1/private/admin/image/upload_with_variants:
+  /api/v1/private/admin/image/upload:
     post:
       description: 'Upload an image with three variants: Original, Medium(500X500)
         & ThumbNail(100X100)'
@@ -67,11 +67,11 @@ paths:
         name: authorization
         required: true
         type: string
-      - description: Some fields are mandatory
+      - description: file is mandatory
         in: formData
         name: file
         required: true
-        type: object
+        type: file
       produces:
       - application/json
       responses:
@@ -94,7 +94,7 @@ paths:
       summary: upload image
       tags:
       - Image
-  /api/v1/private/merchant/image/upload_with_variants:
+  /api/v1/private/merchant/image/upload:
     post:
       description: 'Upload an image with three variants: Original, Medium(500X500)
         & ThumbNail(100X100)'
@@ -108,7 +108,7 @@ paths:
         in: formData
         name: file
         required: true
-        type: object
+        type: file
       produces:
       - application/json
       responses:

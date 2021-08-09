@@ -11,6 +11,6 @@ func (mr *merchantRouter) imageRouter() http.Handler {
 	r := chi.NewRouter()
 	reqHandler := handler.NewApiHandler(mr.ServiceProvider, mr.Log)
 
-	r.With(middleware.AuthenticatedMerchantOnly).Post("/upload_with_variants", reqHandler.UploadImageWithVariantsByMerchant)
+	r.With(middleware.AuthenticatedMerchantOnly).Post("/upload", reqHandler.UploadImageWithVariantsByMerchant)
 	return r
 }

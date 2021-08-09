@@ -29,12 +29,12 @@ func NewApiHandler(srvProvider *service.Provider, log rLog.Logger) *apiHandler {
 // @Tags Image
 // @Produce  json
 // @Param authorization header string true "Set access token here"
-// @Param  file formData object true "Some fields are mandatory"
+// @Param  file formData file true "file is mandatory"
 // @Success 200 {object} response.ImageVariantUploadSuccessResponse
 // @Failure 400 {object} response.EmptyErrorRes "Invalid request body, or missing required fields."
 // @Failure 401 {object} response.EmptyErrorRes "Unauthorized access attempt."
 // @Failure 500 {object} response.EmptyErrorRes "API sever or db unreachable."
-// @Router /api/v1/private/admin/image/upload_with_variants [post]
+// @Router /api/v1/private/admin/image/upload [post]
 func (handler *apiHandler) UploadImageWithVariantsByAdmin(writer http.ResponseWriter, request *http.Request) {
 
 	handler.uploadImageVariants(writer, request)
@@ -46,12 +46,12 @@ func (handler *apiHandler) UploadImageWithVariantsByAdmin(writer http.ResponseWr
 // @Tags Image
 // @Produce  json
 // @Param authorization header string true "Set access token here"
-// @Param  file formData object true "Some fields are mandatory"
+// @Param  file formData file true "Some fields are mandatory"
 // @Success 200 {object} response.ImageVariantUploadSuccessResponse
 // @Failure 400 {object} response.EmptyErrorRes "Invalid request body, or missing required fields."
 // @Failure 401 {object} response.EmptyErrorRes "Unauthorized access attempt."
 // @Failure 500 {object} response.EmptyErrorRes "API sever or db unreachable."
-// @Router /api/v1/private/merchant/image/upload_with_variants [post]
+// @Router /api/v1/private/merchant/image/upload [post]
 func (handler *apiHandler) UploadImageWithVariantsByMerchant(writer http.ResponseWriter, request *http.Request) {
 
 	handler.uploadImageVariants(writer, request)

@@ -7,11 +7,10 @@ import (
 	chiMiddleware "github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 	"github.com/hsaquib/ab-imagews/api/health"
+	"github.com/hsaquib/ab-imagews/api/swagger"
 	"github.com/hsaquib/ab-imagews/config"
 	"github.com/hsaquib/ab-imagews/service"
-	"github.com/hsaquib/ab-imagews/utils"
 	rLog "github.com/hsaquib/rest-log"
-	httpSwagger "github.com/swaggo/http-swagger"
 	"log"
 	"net/http"
 	"os"
@@ -79,10 +78,7 @@ func SetupRouter(cfg *config.AppConfig, srvProvider *service.Provider, logger rL
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
 
-	if cfg.Env == utils.DEV_ENV {
-		r.Get("/doc/*", httpSwagger.Handler())
-	}
-
+	r.Mount("/doc", swagger.Router(cfg))
 	r.Mount("/", health.Router())
 	r.Mount("/api/v1", V1Router(srvProvider, logger))
 

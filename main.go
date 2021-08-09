@@ -22,9 +22,9 @@ import "github.com/hsaquib/ab-imagews/cmd"
 // @version 1.0
 // @description This is auth REST api server
 // @termsOfService tbd
-// @contact.name Rezoan Tamal
-// @contact.email my.full.name.in.lower.case@gmail.com
-// @host https://catalog-iamrz1.cloud.okteto.net
+// @contact.name Hasibus Saquib
+// @contact.email saquib.hasibus@anonderbazar.com
+// @host localhost:8080
 // @BasePath /
 func main() {
 	cmd.Execute()

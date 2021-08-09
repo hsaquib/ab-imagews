@@ -1,19 +1,19 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is image uploader",
-        "title": "imageservice",
+        "description": "This is auth REST api server",
+        "title": "auth",
         "termsOfService": "tbd",
         "contact": {
             "name": "Hasibus Saquib",
-            "email": "saquib@anonderbazar.com"
+            "email": "saquib.hasibus@anonderbazar.com"
         },
         "version": "1.0"
     },
-    "host": "http://localhost:8080",
+    "host": "localhost:8080",
     "basePath": "/",
     "paths": {
-        "/api/v1/private/admin/image/upload_with_variants": {
+        "/api/v1/private/admin/image/upload": {
             "post": {
                 "description": "Upload an image with three variants: Original, Medium(500X500) \u0026 ThumbNail(100X100)",
                 "produces": [
@@ -32,8 +32,8 @@
                         "required": true
                     },
                     {
-                        "type": "object",
-                        "description": "Some fields are mandatory",
+                        "type": "file",
+                        "description": "file is mandatory",
                         "name": "file",
                         "in": "formData",
                         "required": true
@@ -67,7 +67,7 @@
                 }
             }
         },
-        "/api/v1/private/merchant/image/upload_with_variants": {
+        "/api/v1/private/merchant/image/upload": {
             "post": {
                 "description": "Upload an image with three variants: Original, Medium(500X500) \u0026 ThumbNail(100X100)",
                 "produces": [
@@ -86,7 +86,7 @@
                         "required": true
                     },
                     {
-                        "type": "object",
+                        "type": "file",
                         "description": "Some fields are mandatory",
                         "name": "file",
                         "in": "formData",

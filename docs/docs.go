@@ -21,14 +21,14 @@ var doc = `{
         "termsOfService": "tbd",
         "contact": {
             "name": "Hasibus Saquib",
-            "email": "saquib@anonderbazar.com"
+            "email": "saquib.hasibus@anonderbazar.com"
         },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/private/admin/image/upload_with_variants": {
+        "/api/v1/private/admin/image/upload": {
             "post": {
                 "description": "Upload an image with three variants: Original, Medium(500X500) \u0026 ThumbNail(100X100)",
                 "produces": [
@@ -47,8 +47,8 @@ var doc = `{
                         "required": true
                     },
                     {
-                        "type": "object",
-                        "description": "Some fields are mandatory",
+                        "type": "file",
+                        "description": "file is mandatory",
                         "name": "file",
                         "in": "formData",
                         "required": true
@@ -82,7 +82,7 @@ var doc = `{
                 }
             }
         },
-        "/api/v1/private/merchant/image/upload_with_variants": {
+        "/api/v1/private/merchant/image/upload": {
             "post": {
                 "description": "Upload an image with three variants: Original, Medium(500X500) \u0026 ThumbNail(100X100)",
                 "produces": [
@@ -101,7 +101,7 @@ var doc = `{
                         "required": true
                     },
                     {
-                        "type": "object",
+                        "type": "file",
                         "description": "Some fields are mandatory",
                         "name": "file",
                         "in": "formData",
@@ -221,11 +221,11 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
-	Host:        "http://localhost:8080",
+	Host:        "localhost:8080",
 	BasePath:    "/",
 	Schemes:     []string{},
-	Title:       "imageservice",
-	Description: "This is image uploader",
+	Title:       "auth",
+	Description: "This is auth REST api server",
 }
 
 type s struct{}
